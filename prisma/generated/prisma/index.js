@@ -5,7 +5,7 @@ var typeDefs = require("./prisma-schema").typeDefs;
 
 exports.Prisma = prisma_lib_1.makePrismaClientClass({
   typeDefs,
-  endpoint: "https://rruiz-posts-test.herokuapp.com/rruiz-posts-test/prod",
-  secret: "thisismysupercrettext"
+  endpoint: `${process.env["PRISMA_ENDPOINT"]}`,
+  secret: `${process.env["PRISMA_SECRET"]}`
 });
 exports.prisma = new exports.Prisma();
