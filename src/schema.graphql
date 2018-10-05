@@ -1,0 +1,89 @@
+directive @isAuthenticated on QUERY | FIELD
+directive @isSubsAuthenticated on QUERY | FIELD
+
+# import UserOrderByInput from './generated/prisma.graphql'
+
+type Query {
+    posts(query:String, first: Int, skip: Int, after: String): [Post],
+    authors: [User],
+    comments (query:String, first: Int, skip: Int, after: String): [Comment!]!  
+    users(query:String, first: Int, skip: Int, after: String, orderBy: UserOrderByInput): [User!]!
+  }
+
+  type Mutation {
+    createUser(user: UserInput!): AuthPayload! @isAuthenticated
+    createPost(post: PostInput!): Post! @isAuthenticated
+    createComment(comment: CommentInput!): Comment!
+    login(email: String!, password: String!): AuthPayload!
+  }
+
+  type AuthPayload {
+    token: String!
+    user: User!
+  }
+
+  type Subscription {
+    post: PostSubscriptionPayload! @isSubsAuthenticated
+    comment(postId: ID!): CommentSubscriptionPayload!
+  }
+
+  enum MutationType {
+    CREATED, UPDATED
+  }
+
+  input CommentInput {
+    text: String!
+    author: ID!
+    post: ID!
+  }
+
+  type CommentSubscriptionPayload {
+    mutation: MutationType!
+    node: Comment!
+  }
+
+  type PostSubscriptionPayload {
+    mutation: MutationType!
+    node: Post!
+  }
+
+  input PostInput {
+    title: String!
+    body: String!
+    published: Boolean!
+  }
+
+  input UserInput {
+    name: String!
+    email: String!
+    password: String!
+  }
+
+  type Post {
+    id: ID!
+    title: String!
+    body: String!
+    published: Boolean!
+    author: User
+    comments: [Comment!]
+  }
+
+
+
+  type User {
+    id: ID!
+    name: String!
+    email: String @isAuthenticated
+    posts: [Post!]!
+    password: String!
+    comments: [Comment!]!
+    updatedAt: String!
+    createdAt: String!
+  }
+
+  type Comment {
+    id: ID!
+    text: String!
+    author: User!
+    post: Post!
+  }
