@@ -25,6 +25,14 @@ const createUser = gql `
     }
   `;
 
+const createUserSubs = gql `
+    subscription {
+      user {
+        mutation
+      }
+    }
+`;
+
 let token = undefined;  
 
 beforeEach(async () => {
@@ -69,5 +77,29 @@ test('should create a new user', async () => {
   const exists = await prisma.exists.User({id: response.data.createUser.user.id});
 
   expect(exists).toBe(true);
+
+});
+
+test ('should subscribe to add a user', async (done) => {
+
+  getClient(token).subscribe({
+    query: createUserSubs
+  }).subscribe({
+    next(response) {
+      expect(response.data.user.mutation).toBe('CREATED');
+      done()
+    }
+  }); 
+
+  const response = await getClient(token).mutate({
+    mutation: createUser,
+    variables: {
+      "user": {
+        "name": "Rodrigo",
+        "email": "rodrigo@test.com",
+        "password": "rruiz67"
+      }
+    }
+  });
 
 });

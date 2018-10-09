@@ -25,6 +25,7 @@ type Query {
   type Subscription {
     post: PostSubscriptionPayload!
     comment(postId: ID!): CommentSubscriptionPayload!
+    user: UserSubscriptionPayload!
   }
 
   enum MutationType {
