@@ -1,5 +1,5 @@
-directive @isAuthenticated on QUERY | FIELD
-directive @isSubsAuthenticated on QUERY | FIELD
+directive @isAuthenticated on FIELD_DEFINITION 
+directive @isSubsAuthenticated on QUERY
 
 # import UserOrderByInput from './generated/prisma.graphql'
 
@@ -12,7 +12,7 @@ type Query {
 
   type Mutation {
     createUser(user: UserInput!): AuthPayload! @isAuthenticated
-    createPost(post: PostInput!): Post! @isAuthenticated
+    createPost(post: PostInput!): Post! 
     createComment(comment: CommentInput!): Comment!
     login(email: String!, password: String!): AuthPayload!
   }
@@ -23,7 +23,7 @@ type Query {
   }
 
   type Subscription {
-    post: PostSubscriptionPayload! @isSubsAuthenticated
+    post: PostSubscriptionPayload!
     comment(postId: ID!): CommentSubscriptionPayload!
   }
 
@@ -73,7 +73,7 @@ type Query {
   type User {
     id: ID!
     name: String!
-    email: String @isAuthenticated
+    email: String
     posts: [Post!]!
     password: String!
     comments: [Comment!]!
